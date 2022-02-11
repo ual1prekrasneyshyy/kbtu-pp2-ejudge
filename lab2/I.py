@@ -6,7 +6,7 @@ if 1 <= n <= 100:
     index = 0
 
     operation = input()
-    if operation != 2:
+    if operation != "2":
         given_discs.append(operation.split(" ")[1])
     else:
         taken_disks.append(given_discs[index])
