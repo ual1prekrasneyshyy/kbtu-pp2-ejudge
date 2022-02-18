@@ -1,13 +1,5 @@
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
-from problem1 import *
+from problem13 import guess_a_number
+
+guess_a_number()
+
+

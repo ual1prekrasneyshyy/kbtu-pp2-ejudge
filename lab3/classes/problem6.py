@@ -5,7 +5,8 @@ def is_prime(x):
     return 1
 
 
-filter = lambda n: is_prime(n)
+filter = lambda a: is_prime(a)
+
 
 n = int(input("Write some number\nn="))
 prime = filter(n)
