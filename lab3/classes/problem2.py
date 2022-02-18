@@ -18,4 +18,4 @@ print(f'Area of shape is {shape.area()}')
 
 length_of_square = int(input("Insert length of square:\n"))
 square = Square(length_of_square)
-print(f'Area={square.area()}')
+print(f'Area of square={square.area()}')
