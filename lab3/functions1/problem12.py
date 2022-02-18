@@ -3,6 +3,6 @@ def histogram(arr):
         print('*'*i)
 
 
-li = list(map(int, input().split()))
+li = list(map(int, input("Write some numbers separated by space for histogram\n").split()))
 
 histogram(li)

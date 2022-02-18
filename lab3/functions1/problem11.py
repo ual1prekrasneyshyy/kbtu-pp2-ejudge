@@ -5,7 +5,7 @@ def is_palindrome(s: str) -> bool:
     return True
 
 
-s = input("Write word:\n")
+s = input("Write word to check either it is palendrom or not:\n")
 if is_palindrome(s):
     print("Is Palendrom")
 else:

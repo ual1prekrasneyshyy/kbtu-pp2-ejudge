@@ -14,8 +14,10 @@ class Square(Shape):
 
 
 shape = Shape()
-print(f'Area of shape is {shape.area()}')
+print(f'Area of default shape is {shape.area()}')
 
 length_of_square = int(input("Insert length of square:\n"))
 square = Square(length_of_square)
 print(f'Area of square={square.area()}')
+
+
