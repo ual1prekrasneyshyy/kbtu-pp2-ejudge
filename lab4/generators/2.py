@@ -14,4 +14,5 @@ output_data = ""
 for i in generate_even_numbers(n):
     output_data += i
 
+
 print(output_data)
