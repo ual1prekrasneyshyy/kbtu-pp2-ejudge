@@ -41,4 +41,3 @@ with open("output.txt", "w") as f:
     f.write(output_data)
 
 print("Table is saved in file!")
-
