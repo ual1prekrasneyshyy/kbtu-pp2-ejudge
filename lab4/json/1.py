@@ -22,7 +22,7 @@ for key, value in obj1.items():
         length_of_cell += len(value)
     lengths_of_cells_of_table[key] = length_of_cell
     header_of_table += f'{key}{" "*(length_of_cell - len(key))}'
-    header_of_table_1 += f'{"-"*(length_of_cell - 2)}{" "*2}'
+    header_of_table_1 += f'{"-"*(length_of_cell - 3)}{" "*3}'
 
 
 output_data += header_of_table + "\n"
