@@ -1,7 +1,7 @@
 import re
 import csv
 
-with open('receipt.txt', 'r', encoding='utf-8') as f:
+with open('receipt.txt', 'r', encoding='utf8') as f:
     txt = f.read()
 
 # txt = "null"
