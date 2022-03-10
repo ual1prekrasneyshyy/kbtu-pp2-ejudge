@@ -3,6 +3,8 @@ import csv
 
 with open('receipt.txt', 'r', encoding='utf8') as f:
     txt = f.read()
+    txt_as_bytes = str.encode(txt)
+    txt = txt_as_bytes.decode()
 
 # txt = "null"
 
