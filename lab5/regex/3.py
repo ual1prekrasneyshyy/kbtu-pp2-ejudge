@@ -2,6 +2,7 @@ import re
 
 txt = input("Write something:\n")
 
-x = re.findall('[a-z]+', txt)
+x = re.finditer('_?(?P<word>[a-z]+)_?', txt)
 
-print(x)
+for w in x:
+    print(w.group('word'))
