@@ -1,0 +1,4 @@
+For Binomial Distribution,
+
+M(X) = n*p
+Var(X) = n*p*q
