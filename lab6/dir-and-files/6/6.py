@@ -10,4 +10,5 @@ for i in range(65, 91):  #A-Z
     else:
         f = open(file_name, 'x')
         f.write(f'This is {current_letter}.txt file')
+        f.close()
 
