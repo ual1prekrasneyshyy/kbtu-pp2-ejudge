@@ -13,8 +13,8 @@ product = multiple(
     list(
         map(
             int,
-            re.findall(r'\d+', input("Write sequence of numbers separated by anything:\n")
-            )
+            # input('Write sequence of numbers separated by space:\n').split(" ")
+            re.findall(r'\d+', input("Write sequence of numbers separated by anything:\n"))
         )
     )
 )
