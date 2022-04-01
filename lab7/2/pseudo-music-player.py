@@ -14,8 +14,7 @@ def play_a_song():
 def turn_previous_song():
     global _songs
 
-    _songs = [_songs[-1]] + [_songs[:-1]]
-
+    _songs = [_songs[-1]] + _songs[:-1]
     pygame.mixer.music.load(_songs[0])
     pygame.mixer.music.play()
 
@@ -47,7 +46,10 @@ for item in os.listdir(WORKING_DIR):
 pygame.init()
 pygame.mixer.init()
 
-screen = pygame.display.set_mode((200, 100))
+screen = pygame.display.set_mode((635, 360))
+screen.fill(GREEN)
+
+background_image = pygame.image.load('background.png')
 
 running = True
 
@@ -64,7 +66,7 @@ while running:
                 play_a_song()
             elif event.key == pygame.K_s:
                 stop_play_a_song()
-
+    screen.blit(background_image, (10, 10))
     pygame.display.flip()
 
 
