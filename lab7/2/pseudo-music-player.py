@@ -7,8 +7,6 @@ def stop_play_a_song():
 
 
 def play_a_song():
-    global _songs
-    print(_songs[0])
     pygame.mixer.music.load(_songs[0])
     pygame.mixer.music.play()
 
@@ -16,7 +14,7 @@ def play_a_song():
 def turn_previous_song():
     global _songs
 
-    _songs = [_songs[-1]].extend(_songs[:-1])
+    _songs = [_songs[-1]] + [_songs[:-1]]
 
     pygame.mixer.music.load(_songs[0])
     pygame.mixer.music.play()
@@ -25,7 +23,7 @@ def turn_previous_song():
 def turn_next_song():
     global _songs
 
-    _songs = _songs[1:].append(_songs[0])
+    _songs = _songs[1:] + [_songs[0]]
 
     pygame.mixer.music.load(_songs[0])
     pygame.mixer.music.play()
@@ -41,15 +39,15 @@ BLACK = (0, 0, 0)
 _songs = []
 
 for item in os.listdir(WORKING_DIR):
-    # print(item)
     target_path = os.path.join(WORKING_DIR, item)
     if os.path.isfile(target_path):
-        if ('.mp3' in item) or ('.wav' in item) or ('.ogg' in item):
+        if '.wav' in item:
             _songs.append(item)
 
 pygame.init()
+pygame.mixer.init()
 
-screen = pygame.display.set_mode((200,100))
+screen = pygame.display.set_mode((200, 100))
 
 running = True
 
