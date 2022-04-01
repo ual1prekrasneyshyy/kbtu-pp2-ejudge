@@ -45,11 +45,18 @@ for item in os.listdir(WORKING_DIR):
 
 pygame.init()
 pygame.mixer.init()
+pygame.mixer.music.set_volume(0.37)
 
-screen = pygame.display.set_mode((635, 360))
-screen.fill(GREEN)
+screen = pygame.display.set_mode((365, 155))
 
-background_image = pygame.image.load('background.png')
+font1 = pygame.font.SysFont('Verdana', 28)
+font2 = pygame.font.SysFont('Verdana', 16)
+
+txt1 = font1.render('My virtual music player.', True, GREEN)
+txt2 = font2.render('Press [p] to start play music', True, WHITE)
+txt3 = font2.render('Press [s] to stop play music', True, WHITE)
+txt4 = font2.render('Press [->] to turn the next song', True, WHITE)
+txt5 = font2.render('Press [<-] to turn the previous song', True, WHITE)
 
 running = True
 
@@ -66,7 +73,14 @@ while running:
                 play_a_song()
             elif event.key == pygame.K_s:
                 stop_play_a_song()
-    screen.blit(background_image, (10, 10))
+
+    screen.fill(BLUE)
+    screen.blit(txt1, (15, 15))
+    screen.blit(txt2, (15, 50))
+    screen.blit(txt3, (15, 72))
+    screen.blit(txt4, (15, 94))
+    screen.blit(txt5, (15, 116))
+
     pygame.display.flip()
 
 
