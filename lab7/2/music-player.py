@@ -28,7 +28,7 @@ def turn_next_song():
     pygame.mixer.music.play()
 
 
-WORKING_DIR = os.getcwd()
+MUSIC_DIR = os.path.join(os.getcwd() + '\\music')
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -37,11 +37,12 @@ BLACK = (0, 0, 0)
 
 _songs = []
 
-for item in os.listdir(WORKING_DIR):
-    target_path = os.path.join(WORKING_DIR, item)
+for item in os.listdir(MUSIC_DIR):
+    target_path = os.path.join(MUSIC_DIR, item)
+    # print(target_path)
     if os.path.isfile(target_path):
         if '.wav' in item:
-            _songs.append(item)
+            _songs.append(target_path)
 
 pygame.init()
 pygame.mixer.init()

@@ -1,35 +1,47 @@
-import pygame
-import datetime
 import math
+import os
 
+import pygame
 
-def blit_rotate_center(surf, image, topleft, angle):
-    rotated_image = pygame.transform.rotate(image, angle)
-    new_rect = rotated_image.get_rect(center=image.get_rect(topleft = topleft).center)
-    surf.blit(rotated_image, new_rect)
-
-
+size = width, height = 480,360
+center = (width/2, height/2)
 pygame.init()
-screen = pygame.display.set_mode((480, 360))
+screen = pygame.display.set_mode(size)
+done = False
+
+_image_lib = {}
+def get_image(path):
+    global _image_lib
+    image = _image_lib.get(path)
+    if image is None:
+        can_path = path.replace('/', os.sep).replace('\\', os.sep)
+        image = pygame.image.load(can_path)
+        _image_lib[path] = image
+    return image
 
 
-base_of_clock = pygame.image.load('clock.jpg')
-minutes_arrow = pygame.image.load('minutes_arrow.jpg')
-seconds_arrow = pygame.image.load('seconds_arrow.jpg')
+clock = pygame.time.Clock()
 
-running = True
 
-while running:
+
+immin = get_image('images/minutes_arrow.png')
+imsec = get_image('images/seconds_arrow.png')
+
+
+while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_1:
-                blit_rotate_center(screen, minutes_arrow, (200, 200), 1)
+            done = True
 
-        screen.blit(base_of_clock, (0, 0))
-        # screen.blit(minutes_arrow, (0, 0))
-        screen.blit(minutes_arrow, (224, 229))
-        # screen.blit(seconds_arrow, (224, 229))
+    screen.fill((255, 255, 255))
+    immin = pygame.transform.rotate(immin, -0.1) #360 degree / 60 minutes (3600 seconds)
+    dm = immin.get_rect(center=immin.get_rect(center=center).center)
+    imsec = pygame.transform.rotate(imsec, -6) # 360 degree / 60 seconds
+    ds = imsec.get_rect(center=imsec.get_rect(center=center).center)
 
-        pygame.display.flip()
+    screen.blit(get_image('images/clock.jpg'), (0, 0))
+    screen.blit(immin, dm)
+    screen.blit(imsec, ds)
+
+    pygame.display.flip()
+    clock.tick(1)
