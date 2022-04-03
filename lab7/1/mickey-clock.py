@@ -22,11 +22,8 @@ def get_image(path):
 
 clock = pygame.time.Clock()
 
-
-
-immin = get_image('images/minutes_arrow.png')
-imsec = get_image('images/seconds_arrow.png')
-
+im_min = get_image('images/minutes_arrow.png')
+im_sec = get_image('images/seconds_arrow.png')
 
 while not done:
     for event in pygame.event.get():
@@ -34,14 +31,14 @@ while not done:
             done = True
 
     screen.fill((255, 255, 255))
-    immin = pygame.transform.rotate(immin, -0.1) #360 degree / 60 minutes (3600 seconds)
-    dm = immin.get_rect(center=immin.get_rect(center=center).center)
-    imsec = pygame.transform.rotate(imsec, -6) # 360 degree / 60 seconds
-    ds = imsec.get_rect(center=imsec.get_rect(center=center).center)
+    im_min = pygame.transform.rotate(im_min, -0.1) #360 degree / 60 minutes (3600 seconds)
+    dm = im_min.get_rect(center=im_min.get_rect(center=center).center)
+    im_sec = pygame.transform.rotate(im_sec, -6) # 360 degree / 60 seconds
+    ds = im_sec.get_rect(center=im_sec.get_rect(center=center).center)
 
     screen.blit(get_image('images/clock.jpg'), (0, 0))
-    screen.blit(immin, dm)
-    screen.blit(imsec, ds)
+    screen.blit(im_min, dm)
+    screen.blit(im_sec, ds)
 
     pygame.display.flip()
     clock.tick(1)
