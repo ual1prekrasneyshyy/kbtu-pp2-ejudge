@@ -1,15 +1,12 @@
 import math
 import os
+import datetime
 
 import pygame
 
-size = width, height = 480,360
-center = (width/2, height/2)
-pygame.init()
-screen = pygame.display.set_mode(size)
-done = False
-
 _image_lib = {}
+
+
 def get_image(path):
     global _image_lib
     image = _image_lib.get(path)
@@ -20,25 +17,50 @@ def get_image(path):
     return image
 
 
-clock = pygame.time.Clock()
+size = width, height = 480, 360+20
+center = (width//2, (height-20)//2)
+pygame.init()
+screen = pygame.display.set_mode(size)
+done = False
 
-im_min = get_image('images/minutes_arrow.png')
-im_sec = get_image('images/seconds_arrow.png')
+clock = pygame.time.Clock()
+fps = 1
+
+im_min = get_image('images/seconds_arrow.png')
+im_sec = get_image('images/minutes_arrow.png')
+
+angle_for_minutes_arrow, angle_for_seconds_arrow = 0, 0
+
 
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
 
-    screen.fill((255, 255, 255))
-    im_min = pygame.transform.rotate(im_min, -0.1) #360 degree / 60 minutes (3600 seconds)
-    dm = im_min.get_rect(center=im_min.get_rect(center=center).center)
-    im_sec = pygame.transform.rotate(im_sec, -6) # 360 degree / 60 seconds
-    ds = im_sec.get_rect(center=im_sec.get_rect(center=center).center)
 
+    screen.fill((255, 255, 255))
+
+    now = datetime.datetime.now()
+
+    rot_min = pygame.transform.rotate(
+        im_min,
+        -6*now.minute+306
+        # 0
+                                      ) #360 degree / 60 minutes (3600 seconds)
+    dm = rot_min.get_rect(center=rot_min.get_rect(center=center).center)
+    rot_sec = pygame.transform.rotate(im_sec, 0
+                                      -6*now.second+60
+                                      ) # 360 degree / 60 seconds
+    ds = rot_sec.get_rect(center=rot_sec.get_rect(center=center).center)
     screen.blit(get_image('images/clock.jpg'), (0, 0))
-    screen.blit(im_min, dm)
-    screen.blit(im_sec, ds)
+
+    screen.blit(rot_min, dm)
+    screen.blit(rot_sec, ds)
+
+    font = pygame.font.SysFont("Verdana", 25)
+    time_render = font.render(f'{now.__format__("%H:%M:%S")}', True, (0, 0, 255))
+    pygame.draw.line(screen, (255,0,0), (0,337), (480, 337), 5)
+    screen.blit(time_render, (190, 345))
 
     pygame.display.flip()
-    clock.tick(1)
+    clock.tick(fps)
