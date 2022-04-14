@@ -3,8 +3,10 @@ import random
 
 
 pygame.init()
+CLOCK = pygame.time.Clock()
+FPS = 6
 RADIUS = 10
-WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 480, 420
+WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 600, 600
 SCREEN = pygame.display.set_mode(WINDOW_SIZE)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -21,10 +23,6 @@ class Point:
     def get_coordinates(self) -> tuple:
         return self.x, self.y
 
-    # def set_coordinates(self, coordinates: tuple):
-    #     self.x = coordinates[0]
-    #     self.y = coordinates[1]
-
 
 class Food:
     def __init__(self):
@@ -37,8 +35,8 @@ class Food:
         return base*round(value/RADIUS)
 
     def set_random_position(self):
-        self.location.x = self.own_round(0, WINDOW_WIDTH)
-        self.location.y = self.own_round(0, WINDOW_HEIGHT)
+        self.location.x = self.own_round(random.randint(0 , WINDOW_WIDTH))
+        self.location.y = self.own_round(random.randint(0, WINDOW_HEIGHT))
 
     def draw(self):
         pygame.draw.circle(SCREEN, BLUE, self.location.get_coordinates(), self.radius)
@@ -84,14 +82,34 @@ class Snake:
 
 game_over = False
 snake = Snake()
+snake.draw()
 
 while not game_over:
     # print("iii")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over = True
+        if event.type == pygame.KEYDOWN:
+            pressed = pygame.key.get_pressed()
 
+            if pressed[pygame.K_UP]:
+                snake.dy = -1 * snake.block
+                snake.dx = 0
+            if pressed[pygame.K_DOWN]:
+                snake.dy = snake.block
+                snake.dx = 0
+            if pressed[pygame.K_LEFT]:
+                snake.dy = 0
+                snake.dx = -1 * snake.block
+            if pressed[pygame.K_RIGHT]:
+                snake.dy = 0
+                snake.dx = snake.block
+
+    pygame.display.flip()
     SCREEN.fill(WHITE)
     snake.move()
     snake.draw()
+    CLOCK.tick(FPS)
+
+pygame.quit()
 
