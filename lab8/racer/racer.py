@@ -39,6 +39,9 @@ class Coin(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(20, WINDOW_WIDTH-20), random.randint(20, WINDOW_HEIGHT-20))
 
+    def move(self):
+        self.rect.move_ip(0, 3)
+
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 

@@ -4,7 +4,7 @@ import random
 
 pygame.init()
 CLOCK = pygame.time.Clock()
-FPS = 6
+FPS = 10
 RADIUS = 10
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 600, 600
 SCREEN = pygame.display.set_mode(WINDOW_SIZE)
