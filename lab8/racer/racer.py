@@ -24,6 +24,7 @@ game_over_text_label = font.render('Game over!', True, WHITE)
 
 background = pygame.image.load('street.png')
 pygame.mixer.init()
+pygame.mixer.music.set_volume(0.21)
 pygame.mixer.music.load('background.wav')
 pygame.mixer.music.play()
 
@@ -41,12 +42,15 @@ class Coin(pygame.sprite.Sprite):
 
     def move(self):
         self.rect.move_ip(0, 3)
+        if self.rect.bottom > WINDOW_HEIGHT:
+            self.rect.top = 0
+            self.set_random_position()
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
     def set_random_position(self):
-        self.rect.center = (random.randint(20, WINDOW_WIDTH-20), random.randint(20, WINDOW_HEIGHT-20))
+        self.rect.center = (random.randint(20, WINDOW_WIDTH-20), 0)
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -105,18 +109,24 @@ class Player(pygame.sprite.Sprite):
 
 player = Player()
 enemy = Enemy()
+coin = Coin()
 
 enemies = pygame.sprite.Group()
 enemies.add(enemy)
 
+coins = pygame.sprite.Group()
+coins.add(coin)
+
 all_sprites = pygame.sprite.Group()
 all_sprites.add(enemy)
 all_sprites.add(player)
+all_sprites.add(coin)
 
 INC_SPEED = pygame.USEREVENT + 1
 pygame.time.set_timer(INC_SPEED, 1500)
 
-coin = Coin()
+points_for_coins = 0
+
 
 while not game_over:
     for event in pygame.event.get():
@@ -130,10 +140,17 @@ while not game_over:
     scores_label = font_small.render(str(SCORE), True, BLACK)
     screen.blit(scores_label, (10, 10))
 
+    screen.blit(font_small.render(str(points_for_coins), True, BLACK), (320,10))
+
     for sprite in all_sprites:
         sprite.move()
         sprite.draw(screen)
-    coin.draw(screen)
+
+    if pygame.sprite.spritecollideany(player, coins):
+        points_for_coins += 1
+        coins.remove(coins[0])
+
+
     if pygame.sprite.spritecollideany(player, enemies):
         pygame.mixer.music.stop()
         pygame.mixer.Sound('crash.wav').play()

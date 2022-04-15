@@ -1,6 +1,7 @@
+import time
+import datetime
 import pygame
 import random
-
 
 pygame.init()
 CLOCK = pygame.time.Clock()
@@ -13,6 +14,8 @@ BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+
+font = pygame.font.SysFont('Verdana', 70, bold=True)
 
 
 class Point:
@@ -29,17 +32,25 @@ class Food:
         self.location = Point()
         self.radius = RADIUS
         self.set_random_position()
+        self.color = GREEN
 
     @staticmethod
     def own_round(value, base=RADIUS):
         return base*round(value/RADIUS)
 
     def set_random_position(self):
-        self.location.x = self.own_round(random.randint(0 , WINDOW_WIDTH))
+        self.location.x = self.own_round(random.randint(0, WINDOW_WIDTH))
         self.location.y = self.own_round(random.randint(0, WINDOW_HEIGHT))
 
     def draw(self):
-        pygame.draw.circle(SCREEN, BLUE, self.location.get_coordinates(), self.radius)
+        pygame.draw.circle(SCREEN, self.color, self.location.get_coordinates(), self.radius)
+
+
+class SuperFood(Food):
+    def __init__(self):
+        super().__init__()
+        self.radius = 8
+        self.color = BLUE
 
 
 class Snake:
@@ -62,14 +73,14 @@ class Snake:
         self.head().x += self.dx
         self.head().y += self.dy
 
-        if self.head().x > WINDOW_WIDTH:
-            self.head().x = 0
-        if self.head().x < 0:
-            self.head().x = WINDOW_WIDTH
-        if self.head().y > WINDOW_HEIGHT:
-            self.head().y = 0
-        if self.head().y < 0:
-            self.head().y = WINDOW_HEIGHT
+        # if self.head().x > WINDOW_WIDTH:
+        #     self.head().x = 0
+        # if self.head().x < 0:
+        #     self.head().x = WINDOW_WIDTH
+        # if self.head().y > WINDOW_HEIGHT:
+        #     self.head().y = 0
+        # if self.head().y < 0:
+        #     self.head().y = WINDOW_HEIGHT
 
     def draw(self):
         for i, point in enumerate(self.body):
@@ -83,6 +94,13 @@ class Snake:
 game_over = False
 snake = Snake()
 snake.draw()
+
+food = None
+
+seconds = 0
+
+main_food = Food()
+super_food = SuperFood()
 
 while not game_over:
     # print("iii")
@@ -104,12 +122,23 @@ while not game_over:
             if pressed[pygame.K_RIGHT]:
                 snake.dy = 0
                 snake.dx = snake.block
+            if pressed[pygame.K_SPACE]:
+                snake.add_tail()
 
-    pygame.display.flip()
+
+    main_food.draw()
+
+    if snake.head().x > WINDOW_WIDTH or snake.head().x < 0 or snake.head().y > WINDOW_HEIGHT or snake.head().y < 0:
+        time.sleep(0.5)
+        SCREEN.fill(RED)
+        SCREEN.blit(font.render('GAME OVER', True, BLUE), (60, 250))
+
+    pygame.display.update()
     SCREEN.fill(WHITE)
     snake.move()
     snake.draw()
     CLOCK.tick(FPS)
+    seconds += 1
 
 pygame.quit()
 
