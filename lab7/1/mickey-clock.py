@@ -46,7 +46,7 @@ while not done:
         im_min,
         -6*now.minute+306
         # 0
-                                      ) #360 degree / 60 minutes (3600 seconds)
+                                      )
     dm = rot_min.get_rect(center=rot_min.get_rect(center=center).center)
     rot_sec = pygame.transform.rotate(im_sec, 0
                                       -6*now.second+60
