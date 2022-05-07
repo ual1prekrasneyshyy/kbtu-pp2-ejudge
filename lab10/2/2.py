@@ -1,14 +1,51 @@
 import math
 import time
-import datetime
-import pygame
 import random
+import psycopg2
+import pygame
+
+
+def get_user_from_database():
+    global LEVEL, username, user_id
+
+    check_sql_request = f'select * from users where username=\'{username}\''
+    cursor.execute(check_sql_request)
+
+    user_data = cursor.fetchall()
+
+    if len(user_data) > 0:
+        LEVEL = user_data[0][2]
+        user_id = user_data[0][0]
+    else:
+        create_user_sql_request = f'insert into users (username, level) values (\'{username}\', 0)'
+        cursor.execute(create_user_sql_request)
+        connection.commit()
+        get_user_from_database()
+
+
+connection = psycopg2.connect(
+    host='localhost',
+    database='snake_game',
+    user='postgres',
+    password='ual1prekrasneyshyy'
+)
+
+cursor = connection.cursor()
+
+user_id = 0
+SCORE = 0  # score
+LEVEL = 0
+#
+username = input('Insert your username: ')
+
+get_user_from_database()
 
 pygame.init()  # initialization
-CLOCK = pygame.time.Clock()
-FPS = 8  # speed of the game
 WINDOW_WIDTH, WINDOW_HEIGHT = 480, 440  # program window size
-SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT + 80))  # create window
+SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT + 50))  # create window
+CLOCK = pygame.time.Clock()
+FPS = 6 + math.log(LEVEL, 2.4) if LEVEL > 1 else 7 # initial speed of the game
+
 WHITE = (255, 255, 255)  # colors
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
@@ -20,13 +57,9 @@ BLOCK_SIZE = 20  # the size of block (square)
 font = pygame.font.SysFont('Verdana', 63, bold=True)  # big font
 font_small = pygame.font.SysFont('Verdana', 18)  # small font
 
-SCORE = 0  # score
-LEVEL = 0  # level
-
 pygame.display.set_caption('uSnake')  # name of window
 
 POSITIONS_OF_THE_WALL = ('top', 'left', 'bottom', 'right')  # tuple of wall positions
-
 
 def check_food_collision() -> bool:  # food should lay on wall or snake
     global super_food, food, walls, snake
@@ -88,12 +121,12 @@ class Wall:
 
     def construct(self):
         if self.position == 'top' or self.position == 'bottom':  # bottom or top
-            x = own_round(random.randint(WINDOW_WIDTH // 4, 3 * WINDOW_WIDTH // 4))
+            x = own_round(random.randint(WINDOW_WIDTH // 8, 3 * WINDOW_WIDTH // 4))
             y = 0 if self.position == 'top' else WINDOW_HEIGHT  # y is the border
             for i in range(self.length):
                 self.construction.append(Particle(_x=x + i * BLOCK_SIZE, _y=y, color=self.color))
         if self.position == 'right' or self.position == 'left':  # left or right
-            y = own_round(random.randint(WINDOW_HEIGHT // 4, 3 * WINDOW_HEIGHT // 4))
+            y = own_round(random.randint(WINDOW_HEIGHT // 8, 3 * WINDOW_HEIGHT // 4))
             x = 0 if self.position == 'left' else WINDOW_WIDTH - BLOCK_SIZE  # y is the border
             for i in range(self.length):
                 self.construction.append(Particle(_x=x, _y=y + i * BLOCK_SIZE, color=self.color))
@@ -192,22 +225,42 @@ def super_food_disappears_after_some_seconds(seconds=6):  # the time of existing
 
 def over_the_game():  # game over screen
     global game_over
+
+    save_level_sql_request = f'update users set level={LEVEL} where id={user_id}'
+    save_score_sql_request = f'insert into user_scores (user_id, score) values ({user_id}, {SCORE})'
+
+    cursor.execute(save_level_sql_request)
+    cursor.execute(save_score_sql_request)
+
+    connection.commit()
+
     SCREEN.fill((69, 172, 116))
     SCREEN.blit(font.render('GAME OVER', True, WHITE), (30, 170))
     SCREEN.blit(font_small.render(f'Score: {SCORE}', True, WHITE), (32, 250))
     SCREEN.blit(font_small.render(f'Level: {LEVEL}', True, WHITE), (32, 275))
+    SCREEN.blit(font_small.render(f'All best wishes in next trial, {username}!', True, WHITE), (32, 300))
     pygame.display.update()
-    time.sleep(6)
+    time.sleep(5)
     game_over = True
 
 
-for pos in POSITIONS_OF_THE_WALL:  # adding walls
-    w = Wall(_position=pos, _length=random.randint(5, 7), _color=color_of_wall)
-    w.construct()
-    walls.append(w)
+def new_level():
+    global LEVEL, FPS
+    LEVEL += 1
+    FPS += 1
+    generate_new_walls()
+
+
+
+def generate_new_walls():
+    for pos in POSITIONS_OF_THE_WALL:  # adding walls
+        w = Wall(_position=pos, _length=random.randint(5, 7), _color=color_of_wall)
+        w.construct()
+        walls.append(w)
+
+generate_new_walls()
 
 while not game_over:
-    # print("iii")
     for event in pygame.event.get():
         if event.type == DISAPPEAR_SUPER_FOOD_EVENT:  # if disappear super coin event called
             super_food = None
@@ -239,8 +292,9 @@ while not game_over:
         w.draw()
 
     # display the score and level
-    SCREEN.blit(font_small.render(f'Score: {SCORE}', True, BLUE), (11, WINDOW_HEIGHT + 30))
-    SCREEN.blit(font_small.render(f'Level: {LEVEL}', True, BLUE), (11, WINDOW_HEIGHT + 53))
+    SCREEN.blit(font_small.render(f'User: {username}', True, BLUE), (10, WINDOW_HEIGHT + 25))
+    SCREEN.blit(font_small.render(f'Score: {SCORE}', True, BLUE), (WINDOW_WIDTH//2-40, WINDOW_HEIGHT + 25))
+    SCREEN.blit(font_small.render(f'Level: {LEVEL}', True, BLUE), (WINDOW_WIDTH//2+100, WINDOW_HEIGHT + 25))
 
     if snake.head_collide(food.particle):  # get food
         SCORE += 1
@@ -250,8 +304,9 @@ while not game_over:
     if super_food:
         if snake.head_collide(super_food.particle):
             SCORE += 2
-            snake.add_tail()  # twice increasing
-            snake.add_tail()
+            if SCORE % 7 == 1:  # if super food touches level bound
+                new_level()
+            [snake.add_tail() for i in range(2)]  # twice increasing
             super_food = None
 
     if check_food_collision():  # food should not lay on wall or snake
@@ -278,8 +333,7 @@ while not game_over:
         if SCORE % 7 == 0:  # increasing level and speed if score is divisible by 7
             if not level_increased:
                 level_increased = True
-                LEVEL += 1
-                FPS += 2
+                new_level()
         elif SCORE % 7 == 1:
             level_increased = False
 
